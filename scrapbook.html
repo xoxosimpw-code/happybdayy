@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Pastel Scrapbook</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  font-family:'Quicksand',sans-serif;
+  background:#fdebed;
+}
+
+/* NOTEBOOK PAGE */
+.page{
+  position:absolute;
+  inset:0;
+  padding:60px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:
+    repeating-linear-gradient(
+      #fff,
+      #fff 26px,
+      #f3c6d3 27px
+    );
+  transform-origin:left;
+  transform:rotateY(90deg);
+  transition:1s ease;
+  backface-visibility:hidden;
+  z-index:1;
+}
+.page.active{
+  transform:rotateY(0);
+  z-index:20;
+}
+
+/* CARD */
+.card{
+  width:85%;
+  max-width:1000px;
+  padding:40px;
+  border-radius:24px;
+  background:rgba(255,255,255,0.96);
+  box-shadow:0 25px 45px rgba(0,0,0,.18);
+  text-align:center;
+  position:relative;
+}
+
+/* DOODLES */
+.doodle{
+  position:absolute;
+  font-size:22px;
+  opacity:.55;
+}
+.d1{top:10px;left:20px}
+.d2{top:15px;right:25px}
+.d3{bottom:15px;left:45px}
+
+/* TEXT */
+h1{
+  font-family:'Pacifico',cursive;
+  font-size:40px;
+  color:#9b2c3f;
+}
+p{
+  font-size:18px;
+  color:#6a2c2c;
+}
+
+/* PHOTO STACK */
+.photos{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin:30px 0;
+}
+.photo{
+  position:relative;
+  background:#fff;
+  padding:8px;
+  width:155px;
+  border-radius:8px;
+  box-shadow:0 12px 25px rgba(0,0,0,.25);
+  transition:.35s ease;
+}
+.photo:hover{
+  transform:scale(1.05) rotate(1deg);
+}
+
+/* WASHI TAPE */
+.photo::before{
+  content:"";
+  position:absolute;
+  top:-12px;
+  left:35px;
+  width:70px;
+  height:18px;
+  background:rgba(255,205,215,.75);
+  transform:rotate(-6deg);
+  border-radius:4px;
+}
+
+/* DOODLE */
+.photo::after{
+  content:"♡";
+  position:absolute;
+  bottom:-16px;
+  right:10px;
+  font-size:18px;
+  color:#f3a7ba;
+  transform:rotate(-12deg);
+}
+
+.photo img{
+  width:100%;
+  height:120px;
+  object-fit:cover;
+  border-radius:6px;
+}
+
+/* ROTATION VARIANTS */
+.r1{transform:rotate(-4deg)}
+.r2{transform:rotate(3deg)}
+.r3{transform:rotate(-2deg)}
+
+/* STICKER HEARTS */
+.sticker{
+  position:absolute;
+  font-size:14px;
+  filter:drop-shadow(0 2px 2px rgba(0,0,0,.15));
+  animation:wiggle 3s ease-in-out infinite;
+}
+.s1{top:-6px;right:-6px}
+.s2{bottom:-6px;left:-6px}
+
+@keyframes wiggle{
+  0%,100%{transform:rotate(-6deg)}
+  50%{transform:rotate(6deg)}
+}
+
+/* BUTTON */
+button{
+  padding:12px 32px;
+  border:none;
+  border-radius:25px;
+  background:#9b2c3f;
+  color:white;
+  font-size:17px;
+  cursor:pointer;
+}
+button:hover{background:#7f2233}
+
+/* FALLING HEARTS */
+.pixel{
+  position:fixed;
+  top:-10%;
+  font-size:12px;
+  animation:fall linear infinite;
+  opacity:.75;
+  pointer-events:none;
+}
+@keyframes fall{
+  to{transform:translateY(120vh)}
+}
+
+/* MUSIC */
+.music{
+  position:fixed;
+  bottom:18px;
+  right:18px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- FLOATING HEARTS -->
+<script>
+for(let i=0;i<40;i++){
+  const p=document.createElement("span");
+  p.className="pixel";
+  p.innerHTML=["💗","💕","🎀","✨","♡"][Math.floor(Math.random()*5)];
+  p.style.left=Math.random()*100+"vw";
+  p.style.animationDuration=6+Math.random()*7+"s";
+  document.body.appendChild(p);
+}
+</script>
+
+<!-- MUSIC -->
+<div class="music">
+<audio id="bgMusic" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+</div>
+
+<!-- PAGE 1 -->
+<div class="page active">
+  <div class="card">
+    <span class="doodle d1">🎀</span>
+    <span class="doodle d2">✨</span>
+    <h1>Happy birthdayy my babyy yashuuu 💌</h1>
+    <p>a little pastel notebook of us</p>
+    <button onclick="startBook()">Open 💕</button>
+  </div>
+</div>
+
+<!-- SCRAPBOOK PAGES -->
+<script>
+const pagesData=[
+["How it started",["p4.jpeg","p16.jpeg"]],
+["LOVE LOVE LOVE",["p6.jpeg","p5.jpeg"]],
+["Your smile",["p11.jpeg","p15.jpeg","p8.jpeg"]],
+["Soft chaos",["p10.jpeg"]],
+["Tiny moments",["p3.jpeg","p1.jpeg"]],
+["You & me",["p2.jpeg"]],
+["Comfort",["p9.jpeg","p12.jpeg"]],
+["Still choosing you",["p13.jpeg","p14.jpeg"]]
+];
+
+pagesData.forEach(pg=>{
+  const page=document.createElement("div");
+  page.className="page";
+  page.innerHTML=`
+  <div class="card">
+    <span class="doodle d1">💗</span>
+    <span class="doodle d2">⭐</span>
+    <span class="doodle d3">🎀</span>
+
+    <h1>${pg[0]}</h1>
+
+    <div class="photos">
+      ${pg[1].map((img,i)=>`
+      <div class="photo r${(i%3)+1}">
+        <span class="sticker s1">💗</span>
+        <span class="sticker s2">✨</span>
+        <img src="${img}">
+      </div>`).join("")}
+    </div>
+
+    <p style="font-family:'Pacifico',cursive;color:#b14b6a">
+      stuck like a sticker ♡
+    </p>
+
+    <button onclick="nextPage()">Next →</button>
+  </div>`;
+  document.body.appendChild(page);
+});
+</script>
+
+<!-- LAST PAGE -->
+<div class="page">
+  <div class="card">
+    <span class="doodle d1">💖</span>
+    <h1>Always 💕</h1>
+    <p>you’ll always be my favorite page.</p>
+    <p>— Dnyaaanuuu</p>
+  </div>
+</div>
+
+<script>
+let current=0;
+const pages=document.querySelectorAll(".page");
+const music=document.getElementById("bgMusic");
+music.volume=0.8;
+
+/* START MUSIC + BOOK */
+function startBook(){
+  music.play().catch(()=>{});
+  nextPage();
+}
+
+/* KEEP MUSIC PLAYING ON EVERY CLICK */
+function nextPage(){
+  music.play().catch(()=>{});
+  pages[current].classList.remove("active");
+  current++;
+  if(current<pages.length){
+    pages[current].classList.add("active");
+  }
+}
+</script>
+
+</body>
+</html>
